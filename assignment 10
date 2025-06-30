@@ -1,0 +1,15 @@
+import streamlit as st
+
+# Title of the app
+st.title("Hello, Streamlit!")
+
+# Write some text
+st.write("🎉 Welcome to your first Streamlit web app!")
+
+# Add more elements
+st.subheader("This is a subheader")
+st.text("Streamlit lets you build interactive web apps easily using Python.")
+
+# Add a button
+if st.button("Say Hello"):
+    st.success("Hello there! 👋")
