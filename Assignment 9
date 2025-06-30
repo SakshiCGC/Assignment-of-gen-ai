@@ -1,0 +1,47 @@
+import google.generativeai as genai
+import os
+
+# Set your Gemini API Key here
+genai.configure(api_key="API KEY")
+
+# Step 1: Get Candidate Info
+skills = input("Enter your skills/technologies (comma-separated): ")
+experience = input("Enter your years of experience: ")
+job_role = input("Enter your desired job position: ")
+
+# Step 2: Use Gemini to generate questions
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+prompt = f"""
+You are an expert interviewer. Create 10 technical and behavioral interview questions for a candidate applying for the role of '{job_role}'.
+The candidate has {experience} years of experience and knows the following technologies: {skills}.
+Ask a mix of theoretical, practical, and situational questions.
+Number each question clearly.
+"""
+
+response = model.generate_content(prompt)
+questions = response.text.strip().split('\n')
+questions = [q.strip() for q in questions if q.strip() and q[0].isdigit()]
+
+# Step 3: Simulate Interview
+answers = []
+print("\n----- INTERVIEW START -----\n")
+for q in questions:
+    print(q)
+    answer = input("Your answer: ")
+    answers.append((q, answer))
+print("\n----- INTERVIEW COMPLETE -----\n")
+
+# Step 4: Send Q&A back to Gemini for evaluation
+evaluation_prompt = "Evaluate the following candidate's answers to interview questions.\n"
+evaluation_prompt += f"Role Applied: {job_role}\nExperience: {experience} years\nSkills: {skills}\n\n"
+evaluation_prompt += "Provide a score out of 10 and a detailed summary of their performance.\n\n"
+
+for i, (q, a) in enumerate(answers, 1):
+    evaluation_prompt += f"Q{i}: {q}\n"
+    evaluation_prompt += f"A{i}: {a}\n\n"
+
+# Get evaluation
+evaluation_response = model.generate_content(evaluation_prompt)
+print("----- INTERVIEW FEEDBACK -----\n")
+print(evaluation_response.text)
