@@ -1,0 +1,39 @@
+import streamlit as st
+import pandas as pd
+
+# Title
+st.title("📊 Marks Analyzer App")
+
+# Subject List
+subjects = ["Math", "Science", "English", "History", "Computer"]
+marks = []
+
+# Collect user input
+st.header("Enter Marks (0 to 100)")
+for subject in subjects:
+    mark = st.number_input(f"Enter marks for {subject}", min_value=0, max_value=100, step=1)
+    marks.append(mark)
+
+# Button to trigger analysis
+if st.button("Analyze"):
+    # Total and average
+    total = sum(marks)
+    average = total / len(marks)
+
+    # Display results
+    st.subheader("📌 Results")
+    st.write("✅ Total Marks:", total)
+    st.write("📈 Average Marks:", round(average, 2))
+
+    # Feedback based on average
+    if average >= 80:
+        st.success("🎉 Excellent performance!")
+    elif average >= 60:
+        st.info("👍 Good job!")
+    else:
+        st.warning("⚠️ Needs Improvement.")
+
+    # Bar chart
+    st.subheader("📊 Marks Bar Chart")
+    df = pd.DataFrame({"Subject": subjects, "Marks": marks})
+    st.bar_chart(df.set_index("Subject"))
